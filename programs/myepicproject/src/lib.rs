@@ -28,28 +28,19 @@ pub mod myepicproject {
 
   pub fn upvote_gif(ctx: Context<GifVote>, index: u8) -> ProgramResult{
     let base_account = &mut ctx.accounts.base_account;
-
-    // let gif_index = base_account.gif_list.iter().position(|x| x.gif_link==gif_link);
-    // if gif_index.is_some() {
-    //   base_account.gif_list[gif_index.unwrap()].votes+=1;
-    // }
+    
     base_account.gif_list[index as usize].votes+=1;
     Ok(())
   }
 
   pub fn downvote_gif(ctx: Context<GifVote>, index: u8) -> ProgramResult{
     let base_account = &mut ctx.accounts.base_account;
-
-    // let gif_index = base_account.gif_list.iter().position(|x| x.gif_link==gif_link);
-    // if gif_index.is_some() {
-    //   base_account.gif_list[gif_index.unwrap()].votes-=1;
-    // }
+    
     base_account.gif_list[index as usize].votes-=1;
     Ok(())
   }
 
   pub fn send_tip(ctx: Context<UserTip>, lamports: u64) -> ProgramResult {
-    // let base_account = &ctx.accounts.base_account;
     let sender = &mut ctx.accounts.sender;
     let receiver = &mut ctx.accounts.receiver;
 
