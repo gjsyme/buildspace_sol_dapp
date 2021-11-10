@@ -47,6 +47,26 @@ pub mod myepicproject {
     base_account.gif_list[index as usize].votes-=1;
     Ok(())
   }
+
+  pub fn send_tip(ctx: Context<UserTip>, lamports: u64) -> ProgramResult {
+    // let base_account = &ctx.accounts.base_account;
+    let sender = &mut ctx.accounts.sender;
+    let receiver = &mut ctx.accounts.receiver;
+
+    let tip_instr = anchor_lang::solana_program::system_instruction::transfer(
+      &sender.key(),
+      &receiver.key(),
+      lamports
+    );
+
+    anchor_lang::solana_program::program::invoke(
+      &tip_instr,
+      &[
+        sender.to_account_info(),
+        receiver.to_account_info()
+      ]
+    )
+  }
 }
 
 #[derive(Accounts)]
@@ -69,6 +89,15 @@ pub struct AddGif<'info>{
 pub struct GifVote<'info>{
   #[account(mut)]
   pub base_account: Account<'info, BaseAccount>,
+}
+
+#[derive(Accounts)]
+pub struct UserTip<'info>{
+  #[account(mut)]
+  sender: Signer<'info>,
+  #[account(mut)]
+  receiver: AccountInfo<'info>,
+  system_program: Program<'info, System>
 }
 
 #[derive(Debug,Clone,AnchorSerialize,AnchorDeserialize)]

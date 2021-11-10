@@ -12,6 +12,8 @@ const main = async() => {
 	
 	// Create an account keypair for our program to use.
   const baseAccount = anchor.web3.Keypair.generate();
+  // a user to receive money on the tip, hopefully
+  const receiver = new anchor.web3.PublicKey("gqVcEWWAtf8U6pxhgFcBvUp6x6cSfPohAsyuVMmB9Zk");
 
   // Call start_stuff_off, pass it the params it needs!
   let tx = await program.rpc.startStuffOff({
@@ -59,6 +61,16 @@ const main = async() => {
   account = await program.account.baseAccount.fetch(baseAccount.publicKey);
   console.log('👀 GIF Count now',account.totalGifs.toString());
   console.log('👀 GIF List',account.gifList);
+
+  // have to send a tip from one account to another
+  account = await program.rpc.sendTip(new anchor.BN(10000000), {
+    accounts: {
+      sender: provider.wallet.publicKey,
+      receiver: receiver,
+      systemProgram: SystemProgram.programId,
+    }
+  });
+  
 }
 
 const runMain = async () => {
